@@ -13,23 +13,21 @@ public class Graph {
 
   public void addNeighbour(Graph neighbour) {
     this.neighbours.add(neighbour);
-    neighbour.neighbours.add(this);
   }
 
   public boolean isConnectedTo(Graph other) {
-    Set<Graph> visited = new HashSet<Graph>();
-    LinkedList<Graph> pending = new LinkedList<Graph>();
-    if(this == other) return true;
-    pending.addAll(neighbours);
-    visited.add(this);
-    while(pending.peek() != null){
-      Graph element = pending.poll();
-      if(element.equals(other)) return true;
-      visited.add(element);
-      for (Graph neighbour : element.neighbours) {
-        if(!visited.contains(neighbour)) pending.add(neighbour);
-      }
+    return numberOfHopsTo(other) >= 0;
+  }
+
+  public int numberOfHopsTo(Graph other) {
+    if(other.name.equals(this.name)) return 0;
+
+    for (Graph neighbour : neighbours) {
+      int numerOfHopsTo = neighbour.numberOfHopsTo(other);
+      if(numerOfHopsTo != -1){
+        return numerOfHopsTo + 1;
+      };
     }
-    return false;
+    return -1;
   }
 }
